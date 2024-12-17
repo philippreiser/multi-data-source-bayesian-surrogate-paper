@@ -7,7 +7,7 @@ __Authors:__ Philipp Reiser, Paul-Christian Bürkner, Anneli Guthke
 ## Overview
 
 This repository contains code to replicate key experiments from our
-[paper](https://arxiv.org/abs/xxx.xxx) Bayesian Surrogate Training on Multiple Data Sources: A Hybrid Modeling Strategy.
+[paper](https://arxiv.org/abs/2412.11875) Bayesian Surrogate Training on Multiple Data Sources: A Hybrid Modeling Strategy.
 
 <img src="images/overview.png" width="80%"/>
 
@@ -68,7 +68,14 @@ config/sir_covid19.yml
 ## Citation
 
 ``` bibtex
-@misc{}
+@misc{reiser2024bayesiansurrogatetrainingmultiple,
+      title={Bayesian Surrogate Training on Multiple Data Sources: A Hybrid Modeling Strategy}, 
+      author={Philipp Reiser and Paul-Christian Bürkner and Anneli Guthke},
+      year={2024},
+      eprint={2412.11875},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML},
+      url={https://arxiv.org/abs/2412.11875}, 
 }
 ```
 
