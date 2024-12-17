@@ -65,6 +65,49 @@ plot_pp_pce_facet <- function(pp_df, pred_var, alpha=0.1,
   return(pp_plot)
 }
 
+plot_pp_pce_ci <- function(
+  pp_df, 
+  p = c(0.005, 0.05, 0.25, 0.5, 0.75, 0.95, 0.995)
+) {
+  
+  p_names <- map_chr(p, ~paste0(.x*100, "%"))
+
+  p_funs <- map(p, ~partial(quantile, probs = .x, na.rm = TRUE)) %>% 
+    set_names(nm = p_names)
+
+  pp_df_ci_quantiles <- pp_df %>%
+    filter(beta %in% betas_plot)%>%
+    mutate(
+      data_integration_scheme = fct_recode(data_integration_scheme,
+                                            !!!levels_data_integration
+      ))%>%
+    group_by(x_plot, beta, data_integration_scheme) %>%
+    summarize(across(c(pred, mu_pred), p_funs))
+
+  pp_df_ci_quantiles <- pp_df_ci_quantiles %>%
+    mutate(
+      x_plot = scale_from_1(x_plot, lb = 1, ub = config$data$x_lims[2])
+    )
+
+  pp_df_ci_quantiles %>%
+    ggplot(aes(x = x_plot)) +
+    geom_ribbon(aes(ymin = pmax(`pred_0.5%`, ylims_plot[1]), ymax = pmin(`pred_99.5%`, ylims_plot[2]), fill = "99% CI"), alpha = 0.15) +
+    geom_ribbon(aes(ymin = pmax(`pred_5%`, ylims_plot[1]), ymax = pmin(`pred_95%`, ylims_plot[2]), fill = "90% CI"), alpha = 0.25) +
+    geom_ribbon(aes(ymin = pmax(`pred_25%`, ylims_plot[1]), ymax = pmin(`pred_75%`, ylims_plot[2]), fill = "50% CI"), alpha = 0.35) +
+    geom_line(aes(y = `pred_50%`, color = "Median Prediction")) +
+    facet_grid(cols = vars(beta), rows = vars(data_integration_scheme),
+              labeller = label_bquote(cols = beta == .(beta)))+
+    geom_point(aes(x = x1, y = y_noisy), df_real, color = "blue", alpha=1, size=1)+
+    geom_point(aes(x = x1, y = y_noisy), df_real_ood, color = "lightblue", alpha=1, size=1)+
+    scale_fill_manual(values = c("99% CI" = "red", "90% CI" = "red", "50% CI" = "red"), name=NULL) +
+    scale_color_manual(values = c("Median Prediction" = "red"), name=NULL) +
+    scale_x_continuous(breaks = scales::pretty_breaks(n = 3))+
+    # scale_x_continuous(breaks = c(1, 7, 14))+
+    ylim(ylims_plot)+
+    labs(y = ylab_pred, x= xlab)+
+    theme(legend.position = "bottom")
+}
+
 plot_sim_real_model <- function(config, quantiles=c(0.05, 0.5, 0.95)){
   df_list <- list()
   for (i in seq_along(quantiles)){

@@ -24,7 +24,35 @@ df_real_ood <- df_real_ood[df_real_ood$y_noisy>0, ]
 df_real_ood$y <- df_real_ood$y_noisy
 real_test_list <- list("OOD" = df_real_ood)
 # run eval.R
+x_plot <- seq(from=-1, to=1,length.out=100)
+eval_df_list <- eval_surrogates()
+# read results
+pp_df <- readRDS(file.path(results_path, paste0("pp_df_", seed, ".rds")))
+surrogate_coeffs_df <- readRDS(file.path(results_path, paste0("surrogate_coeffs_df_", seed, ".rds")))
+inference_params_df <- readRDS(file.path(results_path, paste0("inference_params_df_", seed, ".rds")))
+test_df <- readRDS(file.path(results_path, paste0("test_df_", seed, ".rds")))
 
+# plot posterior predictive plot
+plot_pp_pce_ci(pp_df)
+ggsave(file.path(results_path, paste0(
+  "posterior_pred_spaghetti_FALSE_", case_study, ".pdf")),
+  height=8, width=15)
+
+levels_test_scenarios <- c("OOD")
+test_df_plot <- test_df %>%
+  mutate(
+  data_integration_scheme = fct_recode(data_integration_scheme,
+                                !!!levels_data_integration
+  ),
+  test_scenario = factor(test_scenario, levels=levels_test_scenarios))
+
+# Predictive performance on test sets via ELPD
+elpd_plot <- ggplot(data = test_df_plot, aes(x=beta, y=real_test_elpd, color=data_integration_scheme))+
+  facet_grid(vars(test_scenario), scales = "free_y")+
+  geom_point()+
+  geom_line()+
+  labs(x = TeX("$beta$"), y = TeX("ELPD"))+
+  theme(legend.title = element_blank())
 # plot elpd
 elpd_plot +
   plot_layout(guides = "collect") & theme(legend.position = 'bottom')
