@@ -19,7 +19,7 @@ This repository contains code to replicate key experiments from our
 In this section, we will detail how to run the weighted surrogate training approaches `Power-Scaling` and `Posterior Predictive Weighting`. 
 We will showcase this on the three scenarios: a synthetic scenario, a SIR scenario with synthetic data and a SIR scenario with real data.
 
-All surrogate models are fitted using the script
+The surrogate models for case study 1 and 2.1 are fitted using the script
 
 ```
 R/main.R
@@ -30,6 +30,8 @@ To get the evaluation polts run:
 ```
 R/eval.R
 ```
+
+For case study 2.2 use the scripts `main_covid19.R` and `eval_covid19.R`.
 
 For each case study a config file exists, which can either be specfied through the command line, 
 or can be set manually in the `load_config_args.R`.
