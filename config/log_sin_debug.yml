@@ -51,7 +51,7 @@ inner_mcmc:
 
 plots:
   pp_ndraws: 200
-  betas_plot: !expr betas
+  betas_plot: !expr c(0.1, 0.5, 1)
   ylims_plot: !expr c(-0.5, 10)
   xlab: "x"
   ylab_epred: !expr TeX("$mu_R$")
