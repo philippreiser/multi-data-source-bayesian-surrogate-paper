@@ -1,0 +1,58 @@
+seed: 100
+
+data:
+  N_sim: 1000
+  N_real: 60
+  model_sim: "sir"
+  model_real: "covid19_italy_first_wave"
+  noise_model_sim: "none"
+  noise_model_real: "none"
+  sigma_sim: 0
+  sigma_real: 0
+  x_idxs: 1
+  x_lims: !expr c(1, 74)
+  x_train_percentages: !expr c(0., 0.7)
+  w_lims: !expr list(w_1 = c(0.1, 1.3), w_2 = c(0.1, 0.6))
+  sample_x_sim: "sobol"
+  sample_x_real: "x1_seq"
+  sample_x_real_ood: "x1_seq"
+  y_log_transform: FALSE
+  y_scale: FALSE
+  w_prior_mean_sim: !expr list(w_1 = 0.3, w_2 = 0.2)
+  w_prior_sigma_sim: !expr list(w_1 = 0.1, w_2 = 0.1)
+  w_prior_mean_real: !expr list(w_1 = 1.6, w_2 = 0.4)
+  w_prior_sigma_real: !expr list(w_1 = 0, w_2 = 0)
+  offset_real: 0.0
+
+surrogate_model:
+  data_integration_schemes: !expr c("power_scaling")
+  betas: !expr seq(from=0, to=1,length.out=21)
+  M: 3
+  poly_degree: 5
+  poly_idx: NULL
+  likelihood: "lognormal"
+  link: "identity"
+
+mcmc:
+  chains: 4
+  parallel_chains: 4
+  iter_sampling: 250
+  iter_warmup: 1000
+  adapt_delta: 0.99
+
+inner_mcmc:
+  chains: 4
+  parallel_chains: 1
+  iter_sampling: 250
+  iter_warmup: 1000
+  adapt_delta: 0.99
+  type: "e_post"
+
+plots:
+  pp_ndraws: 200
+  betas_plot: !expr c(0, 0.25, 0.5, 0.75, 1)
+  ylims_plot: !expr c(0, 450)
+  xlab: "Day"
+  ylab_epred: !expr TeX("$I_R$ [cases per 10^5]")
+  ylab_pred: !expr TeX("$y_R$ [cases per 10^5]")
+  case_study: "case_study_2_2"

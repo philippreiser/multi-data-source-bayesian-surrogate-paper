@@ -1,0 +1,60 @@
+seed: 100
+
+data:
+  N_sim: 100
+  N_real: 30
+  model_sim: "log_trend"
+  model_real: "log_sin"
+  noise_model_sim: "normal"
+  noise_model_real: "normal"
+  sigma_sim: 0.01
+  sigma_real: 0.2
+  x_idxs: 1
+  x_lims: !expr c(1, 200)
+  x_train_percentages: !expr c(0., 0.7)
+  w_lims: !expr c(0.6, 1.4)
+  sample_x_sim: "sobol"
+  sample_x_real: "x1_slice"
+  sample_x_real_ood: "x1_uniform"
+  y_log_transform: FALSE
+  y_scale: FALSE
+  w_prior_mean_sim: 0.9
+  w_prior_sigma_sim: 0.05
+  w_prior_mean_real: 1
+  w_prior_sigma_real: 0
+  offset_real: 0.100
+  add_one: FALSE
+
+surrogate_model:
+  data_integration_schemes: !expr c("power_scaling")
+  betas: !expr seq(0, 1, length.out=21) # c(0, 0.25, 0.5, 1)
+  M: 2
+  poly_degree: 6
+  poly_idx: NULL
+  likelihood: "normal"
+  link: "identity"
+
+mcmc:
+  chains: 4
+  parallel_chains: 4
+  iter_sampling: 250
+  iter_warmup: 1000
+  adapt_delta: 0.99
+
+inner_mcmc:
+  chains: 4
+  parallel_chains: 1
+  iter_sampling: 250
+  iter_warmup: 1000
+  adapt_delta: 0.99
+  type: "e_post"
+  
+plots:
+  pp_ndraws: 200
+  betas_plot: !expr c(0, 0.1, 0.4, 0.75, 1.0)
+  ylims_plot: !expr c(-0.5, 10)
+  xlab: "x"
+  ylab_epred: !expr TeX("$mu_R$")
+  ylab_pred: !expr TeX("$y_R$")
+  case_study: "case_study_1"
+  w_breaks: !expr c(0.8, 1)

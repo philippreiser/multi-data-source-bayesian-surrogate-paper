@@ -1,0 +1,60 @@
+seed: 101
+
+data:
+  N_sim: 101
+  N_real: 30
+  model_sim: "sir_2d_rounded"
+  model_real: "sir_2d_misspec"
+  noise_model_sim: "none"
+  noise_model_real: "negbinom"
+  sigma_sim: 0
+  sigma_real: 5
+  x_idxs: 1
+  x_lims: !expr c(1, 14)
+  x_train_percentages: !expr c(0., 0.5)
+  w_lims: !expr c(1, 3)
+  sample_x_sim: "sobol"
+  sample_x_real: "x1_slice"
+  sample_x_real_ood: "x1_uniform"
+  y_log_transform: FALSE
+  y_scale: FALSE
+  w_prior_mean_sim: 2
+  w_prior_sigma_sim: 0.5
+  w_prior_mean_real: 1.6
+  w_prior_sigma_real: 0
+  offset_real: 0.100
+  add_one: TRUE
+
+surrogate_model:
+  data_integration_schemes: !expr c("power_scaling")
+  betas: !expr c(0.1, 0.5, 1)
+  M: 2
+  poly_degree: 3
+  poly_idx: NULL
+  likelihood: "lognormal"
+  link: "identity"
+
+mcmc:
+  chains: 4
+  parallel_chains: 4
+  iter_sampling: 250
+  iter_warmup: 1000
+  adapt_delta: 0.99
+
+inner_mcmc:
+  chains: 4
+  parallel_chains: 1
+  iter_sampling: 250
+  iter_warmup: 1000
+  adapt_delta: 0.99
+  type: "point"
+
+plots:
+  pp_ndraws: 200
+  betas_plot: !expr betas
+  ylims_plot: !expr c(0, 500)
+  xlab: "t"
+  ylab_epred: !expr TeX("$I_R$")
+  ylab_pred: !expr TeX("$y_R$")
+  case_study: "case_study_2_1_debug"
+  w_breaks: !expr c(1.5, 2.5)
